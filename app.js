@@ -1,0 +1,337 @@
+// Google Sheets Web App URL configuration
+// Please replace this placeholder with your actual Google Script Web App URL!
+// e.g. "https://script.google.com/macros/s/AKfycbz.../exec"
+const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz3TSZyXm2rEx8iK0V5V0CQIr18nAmGJ6g0Lzx-vJ05-HDlKScjp6SbCSxlqlpeIaww/exec";
+
+// Function to transmit data to Google Sheets Web App
+async function sendDataToGoogleSheet(data) {
+    if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("YOUR_GOOGLE_SCRIPT_URL")) {
+        console.log("Google Sheet URL is not configured. Form data:", data);
+        return;
+    }
+
+    // Add timestamp to data payload
+    data.timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+
+    try {
+        await fetch(GOOGLE_SHEET_WEBAPP_URL, {
+            method: "POST",
+            mode: "no-cors", // Crucial for Google Apps Script Web App requests
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Data transmitted to Google Sheets successfully.");
+    } catch (error) {
+        console.error("Error transmitting data to Google Sheets:", error);
+    }
+}
+
+// Tailwind configuration for CDN integration
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            "colors": {
+                "tertiary-fixed": "#d3e8d5",
+                "surface-container": "#efeeea",
+                "primary-container": "#af5e3f",
+                "surface-dim": "#dbdad6",
+                "inverse-surface": "#2f312e",
+                "secondary-container": "#d6e7a1",
+                "secondary-fixed": "#d9eaa3",
+                "surface-bright": "#faf9f5",
+                "tertiary": "#4d6151",
+                "surface-container-low": "#f4f4f0",
+                "tertiary-fixed-dim": "#b7ccb9",
+                "error": "#ba1a1a",
+                "primary-fixed-dim": "#ffb59b",
+                "on-primary-fixed-variant": "#763217",
+                "on-tertiary-fixed": "#0e1f13",
+                "surface-tint": "#94492c",
+                "surface-variant": "#e3e2df",
+                "secondary": "#56642b",
+                "on-primary-container": "#fffbff",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed": "#161f00",
+                "on-surface": "#1b1c1a",
+                "surface": "#faf9f5",
+                "on-primary": "#ffffff",
+                "primary": "#91472a",
+                "on-secondary-container": "#5a682f",
+                "error-container": "#ffdad6",
+                "secondary-fixed-dim": "#bdce89",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed": "#ffdbcf",
+                "on-primary-fixed": "#380d00",
+                "tertiary-container": "#667969",
+                "on-tertiary-container": "#f6fff4",
+                "on-secondary-fixed-variant": "#3e4c16",
+                "on-error": "#ffffff",
+                "surface-container-highest": "#e3e2df",
+                "surface-container-high": "#e9e8e4",
+                "outline": "#87736c",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-fixed-variant": "#394b3d",
+                "on-secondary": "#ffffff",
+                "inverse-on-surface": "#f2f1ed",
+                "background": "#faf9f5",
+                "outline-variant": "#dac1b9",
+                "on-surface-variant": "#54433d",
+                "inverse-primary": "#ffb59b",
+                "on-background": "#1b1c1a"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "base": "8px",
+                "margin-desktop": "64px",
+                "stack-md": "24px",
+                "stack-lg": "48px",
+                "margin-mobile": "20px",
+                "gutter": "24px",
+                "container-max": "1200px",
+                "stack-sm": "12px"
+            },
+            "fontFamily": {
+                "headline-md": ["Playfair Display"],
+                "headline-xl": ["Playfair Display"],
+                "headline-xl-mobile": ["Playfair Display"],
+                "label-md": ["Manrope"],
+                "body-md": ["Manrope"],
+                "label-sm": ["Manrope"],
+                "headline-lg": ["Playfair Display"],
+                "body-lg": ["Manrope"]
+            },
+            "fontSize": {
+                "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                "headline-xl-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+            }
+        },
+    },
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Order Form Submit Handler (leads directly to Google Sheet)
+    const orderForm = document.getElementById('orderForm');
+    if (orderForm) {
+        orderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('orderName');
+            const phoneInput = document.getElementById('orderPhone');
+            const addressInput = document.getElementById('orderAddress');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            const address = addressInput ? addressInput.value.trim() : '';
+
+            const honeyTrap = document.getElementById('order_honey_trap');
+            if (honeyTrap && honeyTrap.value !== '') {
+                console.warn('Spam bot detected and blocked.');
+                return;
+            }
+
+            if (!name || !phone || !address) {
+                alert('कृपया अपना नाम, मोबाइल नंबर और पता भरें।');
+                return;
+            }
+
+            // Validate phone number format (exactly 10 digits)
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            if (cleanPhone.length !== 10) {
+                alert('कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें (जैसे: 9876543210)।');
+                return;
+            }
+
+            // Prevent double submission by disabling button
+            const submitBtn = orderForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerText : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'प्रक्रिया जारी है...';
+            }
+
+            // Transmit order details to Google Sheet
+            sendDataToGoogleSheet({
+                formType: "Order",
+                name: name,
+                phone: cleanPhone,
+                address: address,
+                city: "",
+                rating: "",
+                message: ""
+            }).then(() => {
+                alert(`धन्यवाद, ${name}! आपका ऑर्डर दर्ज कर लिया गया है। हम आपसे शीघ्र ही संपर्क करेंगे।`);
+                orderForm.reset();
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText;
+                }
+            }).catch((err) => {
+                console.error("Order submit failed:", err);
+                alert("कुछ समस्या आई, कृपया पुनः प्रयास करें।");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText;
+                }
+            });
+        });
+    }
+
+    // Toggle support / chat FAB bubble
+    const fabButton = document.querySelector('button.bg-secondary');
+    const welcomeBubble = document.querySelector('.group .bg-surface');
+
+    if (fabButton && welcomeBubble) {
+        fabButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            welcomeBubble.classList.toggle('opacity-0');
+            welcomeBubble.classList.toggle('opacity-100');
+            welcomeBubble.classList.toggle('translate-y-4');
+            welcomeBubble.classList.toggle('translate-y-0');
+        });
+
+        // Hide bubble if clicking outside
+        document.addEventListener('click', () => {
+            welcomeBubble.classList.add('opacity-0');
+            welcomeBubble.classList.remove('opacity-100');
+            welcomeBubble.classList.add('translate-y-4');
+            welcomeBubble.classList.remove('translate-y-0');
+        });
+
+        welcomeBubble.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    // Star Rating selection interactive logic
+    const ratingContainer = document.getElementById('starRating');
+    const ratingValueInput = document.getElementById('ratingValue');
+    if (ratingContainer && ratingValueInput) {
+        const starBtns = ratingContainer.querySelectorAll('.star-btn');
+        starBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = parseInt(btn.getAttribute('data-value'));
+                ratingValueInput.value = val;
+
+                // Highlight up to selected star, dim rest
+                starBtns.forEach((sBtn, idx) => {
+                    if (idx < val) {
+                        sBtn.classList.remove('text-surface-dim');
+                        sBtn.classList.add('text-primary');
+                    } else {
+                        sBtn.classList.remove('text-primary');
+                        sBtn.classList.add('text-surface-dim');
+                    }
+                });
+            });
+        });
+    }
+
+    // Feedback Form Submit Handler
+    const feedbackForm = document.getElementById('feedbackForm');
+    const reviewsContainer = document.getElementById('reviews-container');
+    if (feedbackForm && reviewsContainer) {
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('feedName').value.trim();
+            const city = document.getElementById('feedCity').value.trim();
+            const rating = parseInt(ratingValueInput.value);
+            const msg = document.getElementById('feedMsg').value.trim();
+
+            const honeyTrap = document.getElementById('feedback_honey_trap');
+            if (honeyTrap && honeyTrap.value !== '') {
+                console.warn('Spam bot detected and blocked.');
+                return;
+            }
+
+            if (!name || !city || !msg) {
+                alert('कृपया सभी फ़ील्ड भरें।');
+                return;
+            }
+
+            // Prevent double submission by disabling button
+            const submitBtn = feedbackForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerText : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'प्रक्रिया जारी है...';
+            }
+
+            // Transmit feedback details to Google Sheet
+            sendDataToGoogleSheet({
+                formType: "Feedback",
+                name: name,
+                phone: "",
+                address: "",
+                city: city,
+                rating: rating,
+                message: msg
+            }).then(() => {
+                alert('आपकी प्रतिक्रिया सबमिट करने के लिए धन्यवाद!');
+                feedbackForm.reset();
+
+                // Reset stars color back to default 5 star rating
+                const starBtns = ratingContainer.querySelectorAll('.star-btn');
+                starBtns.forEach(sBtn => {
+                    sBtn.classList.remove('text-surface-dim');
+                    sBtn.classList.add('text-primary');
+                });
+                ratingValueInput.value = 5;
+
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText;
+                }
+            }).catch((err) => {
+                console.error("Feedback submit failed:", err);
+                alert("कुछ समस्या आई, कृपया पुनः प्रयास करें।");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText;
+                }
+            });
+        });
+    }
+
+    // Mobile navigation drawer toggle logic
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenuCloseBtn = document.getElementById('mobileMenuCloseBtn');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const mobileMenuDrawer = document.getElementById('mobileMenuDrawer');
+
+    if (mobileMenuBtn && mobileMenuCloseBtn && mobileMenuOverlay && mobileMenuDrawer) {
+        const openMenu = () => {
+            mobileMenuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            mobileMenuDrawer.classList.remove('translate-x-full');
+        };
+
+        const closeMenu = () => {
+            mobileMenuOverlay.classList.add('opacity-0', 'pointer-events-none');
+            mobileMenuDrawer.classList.add('translate-x-full');
+        };
+
+        mobileMenuBtn.addEventListener('click', openMenu);
+        mobileMenuCloseBtn.addEventListener('click', closeMenu);
+        mobileMenuOverlay.addEventListener('click', (e) => {
+            if (e.target === mobileMenuOverlay) closeMenu();
+        });
+
+        // Close drawer when a nav link is clicked
+        const mobileLinks = mobileMenuDrawer.querySelectorAll('nav a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    }
+});

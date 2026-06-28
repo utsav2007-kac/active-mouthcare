@@ -172,6 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 rating: "",
                 message: ""
             }).then(() => {
+                 // Open dialer (replace +919999999999 with your actual business phone number)
+                window.location.href = "tel:+916352975326";
+
                 alert(`धन्यवाद, ${name}! आपका ऑर्डर दर्ज कर लिया गया है। हम आपसे शीघ्र ही संपर्क करेंगे।`);
                 orderForm.reset();
                 if (submitBtn) {
